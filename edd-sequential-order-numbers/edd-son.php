@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Easy Digital Downloads Sequential Order Numbers
+ * Plugin Name: EDD Sequential Order Numbers
  * Plugin URI: http://edd-son.com
  * Description: Real sequential order numbers for Easy Digital Downloads.
  * Version: 1.0.0
@@ -64,6 +64,7 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 			require_once 'includes/edd-son-settings.php';
 			require_once 'includes/edd-son-numbers.php';
 			require_once 'includes/edd-son-prefix.php';
+			//require_once 'includes/edd-son-maintainer.php';
 		}
 
 		/**

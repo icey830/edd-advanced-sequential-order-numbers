@@ -3,7 +3,7 @@
 class EDD_Son_Numbers{
 	public static function pending_order()
 	{
-		return self::next( 'pending' );
+		return self::next( 'temp' );
 	}
 
 	public static function free_order()
