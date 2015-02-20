@@ -83,10 +83,12 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 			add_action( 'edd_update_payment_status', array( $this, 'order_completed' ), 10, 3 );
 			add_filter( 'edd_payment_number', array( $this, 'get_payment_number' ), 10, 2 );
 
+
+			if( ! class_exists( 'EDD_License' ) )
+				include( EDD_SON_PLUGIN_DIR . 'includes/EDD_License_Handler.php' );
+
 			// Handle licensing
-			if( class_exists( 'EDD_License' ) ) {
-				$license = new EDD_License( __FILE__, 'Easy Digital Downloads Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
-			}
+			$license = new EDD_License( __FILE__, 'EDD Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
 		}
 
 		/**
@@ -219,29 +221,7 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 	}
 } // end class exists check
 
-
-/**
- * The main function responsible for returning the one true EDD_Plugin_Name
- * instance to functions everywhere
- *
- * @since       1.0.0
- * @return      \EDD_Plugin_Name The one true EDD_Plugin_Name
- *
- * @todo        Inclusion of the activation code below isn't mandatory, but
- *              can prevent any number of errors, including fatal errors, in
- *              situations where your extension is activated but EDD is not
- *              present.
- */
 function EDD_Son_load() {
-	if( ! class_exists( 'Easy_Digital_Downloads' ) ) {
-		if( ! class_exists( 'EDD_Extension_Activation' ) ) {
-			require_once 'includes/class.extension-activation.php';
-		}
-		$activation = new EDD_Extension_Activation( plugin_dir_path( __FILE__ ), basename( __FILE__ ) );
-		$activation = $activation->run();
-		return EDD_Son::instance();
-	} else {
-		return EDD_Son::instance();
-	}
+	return EDD_Son::instance();
 }
 add_action( 'plugins_loaded', 'EDD_Son_load' );
