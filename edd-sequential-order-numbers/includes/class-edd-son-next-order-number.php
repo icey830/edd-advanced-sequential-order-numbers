@@ -1,17 +1,33 @@
 <?php
 
-class EDD_Son_Numbers{
-	public static function pending_order()
+class EDD_Son_Next_Order_Number{
+
+	/**
+	 * Get the next order number for pending orders
+	 *
+	 * @return int
+	 */
+	public static function temporary()
 	{
 		return self::next( 'temp' );
 	}
 
-	public static function free_order()
+	/**
+	 * Get the next free order number
+	 *
+	 * @return int
+	 */
+	public static function free()
 	{
 		return self::next( 'free' );
 	}
 
-	public static function order()
+	/**
+	 * Get the next completed order number
+	 *
+	 * @return int
+	 */
+	public static function completed()
 	{
 		return self::next( 'completed' );
 	}

@@ -1,8 +1,7 @@
 <?php
 /**
- * Plugin Name: EDD Sequential Order Numbers
- * Plugin URI: http://edd-son.com
- * Description: Real sequential order numbers for Easy Digital Downloads.
+ * Plugin Name: EDD Advanced Sequential Order Numbers
+ * Description: Advanced sequential order numbers for Easy Digital Downloads.
  * Version: 1.0.0
  * Author: 1337 ApS
  * Author URI: http://1337.dk
@@ -11,7 +10,7 @@
 // Exit if accessed directly
 if( !defined( 'ABSPATH' ) ) exit;
 
-if( !class_exists( 'EDD_Plugin_Name' ) ) {
+if( !class_exists( 'EDD_Son' ) ) {
 
 	class EDD_Son {
 		private static $_instance;
@@ -62,7 +61,7 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 		{
 			require_once 'includes/edd-son-log.php';
 			require_once 'includes/edd-son-settings.php';
-			require_once 'includes/edd-son-numbers.php';
+			require_once 'includes/edd-son-next-order-number.php';
 			require_once 'includes/edd-son-prefix.php';
 			//require_once 'includes/edd-son-maintainer.php';
 		}
@@ -88,7 +87,7 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 				include( EDD_SON_PLUGIN_DIR . 'includes/EDD_License_Handler.php' );
 
 			// Handle licensing
-			$license = new EDD_License( __FILE__, 'EDD Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
+			$license = new EDD_License( __FILE__, 'EDD Advanced Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
 		}
 
 		/**
@@ -125,27 +124,51 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 			}
 		}
 
+		/**
+		 * Are the advanced order numbers enabled?
+		 *
+		 * @since 1.0.0
+		 * @return bool
+		 */
 		private function is_active()
 		{
 			return edd_get_option( 'edd_son_active' );
 		}
 
+		/**
+		 * Hooks into and filters the order number
+		 *
+		 * @param $number
+		 * @param $payment_id
+		 * @see 'edd_payment_number'
+		 * @since 1.0.0
+		 * @return string The order number
+		 */
 		public function get_payment_number( $number, $payment_id )
 		{
-			if( $this->is_active() ) {
-				$sequential_number = edd_get_payment_meta( $payment_id, '_edd_son_payment_number', true );
+			if( !$this->is_active() )
+				return $number;
 
-				if( $sequential_number )
-					$number = $sequential_number;
-			}
+			$sequential_number = edd_get_payment_meta( $payment_id, '_edd_son_payment_number', true );
 
-			return $number;
+			if( ! $sequential_number )
+				return $number;
+
+			return $sequential_number;
+
 		}
 
+		/**
+		 * Update order number of a completed order
+		 *
+		 * @param int $payment_id
+		 * @param string $new_status
+		 * @param string $old_status
+		 * @see 'edd_update_payment_status'
+		 * @since 1.0.0
+		 */
 		public function order_completed( $payment_id, $new_status, $old_status )
 		{
-			EDD_Son_Log::log("order_completed", "Order $payment_id - $new_status - $old_status");
-
 			// Only run this update on orders that're completed
 			if( $new_status != 'publish' )
 				return;
@@ -159,8 +182,9 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 		/**
 		 * Assign a sequential order number to the order
 		 *
-		 * @param $payment
+		 * @param $payment_id
 		 * @param $payment_data
+		 * @since 1.0.0
 		 */
 		public function assign_order_number( $payment_id, $payment_data = null){
 			// First check if the plugin is active.
@@ -172,32 +196,28 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 
 			// Get the next order number including
 			// it's pre-/postfix.
-			$number = $this->next_payment_number( $payment );
-
-			EDD_Son_Log::log("assign_order_number_2", "Next Order Number: $number");
+			$number = $this->next_order_number( $payment );
 
 			// Set the order number!
 			edd_update_payment_meta( $payment->ID, '_edd_son_payment_number', $number );
 		}
 
 		/**
-		 * Get the next payment number, including pre-/postfix.
+		 * Get the next order number, including pre-/postfix.
 		 *
 		 * @param $payment Payment post object
-		 * @param array/null $payment_data
+		 * @since 1.0.0
 		 *
 		 * @return string The next payment number, for the specific order type
 		 */
-		private function next_payment_number( $payment )
+		private function next_order_number( $payment )
 		{
-			$number = '';
-
 			// Get the payment total
 			$payment_total = edd_get_payment_amount( $payment->ID );
 
 			// If the order isn't completed, we set a temporary order number
 			if( $payment->post_status != 'publish' ){
-				$number = EDD_Son_Prefix::pending_order() . EDD_Son_Numbers::pending_order();
+				$number = EDD_Son_Prefix::temporary() . EDD_Son_Next_Order_Number::temporary();
 
 				// Store the temporary payment number, for (possible)
 				// later use. This is because the temp. order number
@@ -208,12 +228,12 @@ if( !class_exists( 'EDD_Plugin_Name' ) ) {
 			// set the actual prefix. First check if
 			// this is a free order.
 			}elseif( $payment_total  == 0 )
-				$number = EDD_Son_Prefix::free_order() . EDD_Son_Numbers::free_order();
+				$number = EDD_Son_Prefix::free() . EDD_Son_Next_Order_Number::free();
 
 			// Since the order is completed, and it's
 			// not free, this must be a regular order.
 			else
-				$number = EDD_Son_Prefix::order() . EDD_Son_Numbers::order();
+				$number = EDD_Son_Prefix::completed() . EDD_Son_Next_Order_Number::completed();
 
 			// Return the order number
 			return $number;
