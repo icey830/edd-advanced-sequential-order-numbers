@@ -44,7 +44,7 @@ class EDD_Son_Next_Order_Number{
 	{
 		global $edd_options;
 
-		if( isset( $edd_options['edd_son_number_' . $slug] ) )
+		if( isset( $edd_options['edd_son_number_' . $slug] ) && !empty( $edd_options['edd_son_number_' . $slug] ) && is_numeric( $edd_options['edd_son_number_' . $slug] ) )
 			$edd_options['edd_son_number_' . $slug]++;
 		else
 			$edd_options['edd_son_number_' . $slug] = 2;
