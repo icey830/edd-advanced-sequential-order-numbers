@@ -59,10 +59,11 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 */
 		private function includes()
 		{
-			require_once 'includes/edd-son-log.php';
-			require_once 'includes/edd-son-settings.php';
-			require_once 'includes/edd-son-next-order-number.php';
-			require_once 'includes/edd-son-prefix.php';
+			require_once 'includes/class-edd-son-log.php';
+			require_once 'includes/class-edd-son-settings.php';
+			require_once 'includes/class-edd-son-next-order-number.php';
+			require_once 'includes/class-edd-son-prefix.php';
+			require_once 'includes/class-edd-son-postfix.php';
 			//require_once 'includes/edd-son-maintainer.php';
 		}
 
@@ -75,7 +76,8 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 */
 		private function hooks() {
 			// Register settings
-			add_filter( 'edd_settings_extensions', array( 'EDD_Son_Settings', 'settings' ), 1 );
+			add_filter( 'edd_settings_tabs', array( 'EDD_Son_Settings', 'setting_tabs' ) );
+			add_filter( 'edd_registered_settings', array( 'EDD_Son_Settings', 'settings' ), 1 );
 
 			// Inject order number functionality
 			add_action( 'edd_insert_payment', array( $this, 'assign_order_number' ), 10, 2 );
@@ -212,12 +214,21 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 */
 		private function next_order_number( $payment )
 		{
-			// Get the payment total
-			$payment_total = edd_get_payment_amount( $payment->ID );
+			// Use different number series for free orders
+			$free_number_series = edd_get_option( 'edd_son_free_number_series' );
+
+			// Get the payment total if free
+			// number series is enabled. If
+			// not enabled, no need to waste
+			// time getting the total.
+			if( $free_number_series )
+				$payment_total = edd_get_payment_amount( $payment->ID );
+			else
+				$payment_total = -1;
 
 			// If the order isn't completed, we set a temporary order number
 			if( $payment->post_status != 'publish' ){
-				$number = EDD_Son_Prefix::temporary() . EDD_Son_Next_Order_Number::temporary();
+				$number = EDD_Son_Prefix::temporary() . EDD_Son_Next_Order_Number::temporary() . EDD_Son_Postfix::temporary();
 
 				// Store the temporary payment number, for (possible)
 				// later use. This is because the temp. order number
@@ -227,13 +238,13 @@ if( !class_exists( 'EDD_Son' ) ) {
 			// The order is completed now, so we should
 			// set the actual prefix. First check if
 			// this is a free order.
-			}elseif( $payment_total  == 0 )
-				$number = EDD_Son_Prefix::free() . EDD_Son_Next_Order_Number::free();
+			}elseif( $free_number_series && $payment_total  == 0 )
+				$number = EDD_Son_Prefix::free() . EDD_Son_Next_Order_Number::free() . EDD_Son_Postfix::free();
 
 			// Since the order is completed, and it's
 			// not free, this must be a regular order.
 			else
-				$number = EDD_Son_Prefix::completed() . EDD_Son_Next_Order_Number::completed();
+				$number = EDD_Son_Prefix::completed() . EDD_Son_Next_Order_Number::completed() . EDD_Son_Postfix::completed();
 
 			// Return the order number
 			return $number;

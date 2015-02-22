@@ -43,7 +43,11 @@ class EDD_Son_Next_Order_Number{
 	private static function increment( $slug )
 	{
 		global $edd_options;
-		$edd_options['edd_son_number_' . $slug]++;
+
+		if( isset( $edd_options['edd_son_number_' . $slug] ) )
+			$edd_options['edd_son_number_' . $slug]++;
+		else
+			$edd_options['edd_son_number_' . $slug] = 2;
 		update_option( 'edd_settings', $edd_options );
 	}
 }
