@@ -78,6 +78,10 @@ if( !class_exists( 'EDD_Son' ) ) {
 			// Register settings
 			add_filter( 'edd_settings_tabs', array( 'EDD_Son_Settings', 'setting_tabs' ) );
 			add_filter( 'edd_registered_settings', array( 'EDD_Son_Settings', 'settings' ), 1 );
+			add_filter( 'edd_settings_misc', array( 'EDD_Son_Settings', 'remove_edd_settings' ) );
+
+			// Admin view
+			add_action( 'edd_view_order_details_payment_meta_after', array( $this, 'admin_view_temp_order_number'));
 
 			// Inject order number functionality
 			add_action( 'edd_insert_payment', array( $this, 'assign_order_number' ), 10, 2 );
@@ -85,11 +89,28 @@ if( !class_exists( 'EDD_Son' ) ) {
 			add_filter( 'edd_payment_number', array( $this, 'get_payment_number' ), 10, 2 );
 
 
-			if( ! class_exists( 'EDD_License' ) )
-				include( EDD_SON_PLUGIN_DIR . 'includes/EDD_License_Handler.php' );
-
 			// Handle licensing
-			$license = new EDD_License( __FILE__, 'EDD Advanced Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
+			if( class_exists( 'EDD_License' ) )
+				$license = new EDD_License( __FILE__, 'EDD Advanced Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
+		}
+
+		public function admin_view_temp_order_number( $payment_id ){
+			if( !$this->is_active() )
+				return;
+
+			$temp_number = edd_get_payment_meta( $payment_id, '_edd_son_temp_payment_number', true );
+
+			if( empty( $temp_number ) )
+				return;
+
+			?>
+			<div class="edd-order-tx-id edd-admin-box-inside">
+				<p>
+					<span class="label"><?php _e( 'Temporary order number:', EDD_SON_LANG ); ?></span>&nbsp;
+					<span><?php echo $temp_number; ?></span>
+				</p>
+			</div>
+			<?php
 		}
 
 		/**

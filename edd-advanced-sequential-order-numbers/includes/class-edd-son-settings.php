@@ -7,6 +7,16 @@ class EDD_Son_Settings{
 		return $tabs;
 	}
 
+	public static function remove_edd_settings( $settings )
+	{
+		unset( $settings['enable_sequential'] );
+		unset( $settings['sequential_start'] );
+		unset( $settings['sequential_prefix'] );
+		unset( $settings['sequential_postfix'] );
+
+		return $settings;
+	}
+
 	/**
 	 * Add settings
 	 *
