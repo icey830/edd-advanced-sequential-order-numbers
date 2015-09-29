@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: EDD Advanced Sequential Order Numbers
+ * Plugin Name: Easy Digital Downloads - Advanced Sequential Order Numbers
  * Description: Advanced sequential order numbers for Easy Digital Downloads.
- * Version: 1.0.2
+ * Version: 1.0.1
  * Author: 1337 ApS
  * Author URI: http://1337.dk
  */
@@ -45,7 +45,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 			define( 'EDD_SON_PLUGIN_FILE', __FILE__ );
 			define( 'EDD_SON_PLUGIN_DIR', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 			define( 'EDD_SON_PLUGIN_URL', trailingslashit( plugin_dir_url(__FILE__) ) );
-			define( 'EDD_SON_VERSION', '1.0.2' );
+			define( 'EDD_SON_VERSION', '1.0.1' );
 			define( 'EDD_SON_DEBUG', false );
 			define( 'EDD_SON_LANG', 'edd-son' );
 		}
@@ -59,13 +59,12 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 */
 		private function includes()
 		{
-			require_once 'includes/class-edd-son-log.php';
-			require_once 'includes/class-edd-son-settings.php';
-			require_once 'includes/class-edd-son-next-order-number.php';
-			require_once 'includes/class-edd-son-prefix.php';
-			require_once 'includes/class-edd-son-postfix.php';
-			require_once 'includes/admin/class-edd-son-admin-search.php';
-			//require_once 'includes/edd-son-maintainer.php';
+			require_once EDD_SON_PLUGIN_DIR . 'includes/class-edd-son-log.php';
+			require_once EDD_SON_PLUGIN_DIR . 'includes/class-edd-son-settings.php';
+			require_once EDD_SON_PLUGIN_DIR . 'includes/class-edd-son-next-order-number.php';
+			require_once EDD_SON_PLUGIN_DIR . 'includes/class-edd-son-prefix.php';
+			require_once EDD_SON_PLUGIN_DIR . 'includes/class-edd-son-postfix.php';
+			require_once EDD_SON_PLUGIN_DIR . 'includes/admin/class-edd-son-admin-search.php';
 		}
 
 		/**
@@ -92,7 +91,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 
 			// Handle licensing
 			if( class_exists( 'EDD_License' ) )
-				$license = new EDD_License( __FILE__, 'EDD Advanced Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
+				$license = new EDD_License( __FILE__, 'Advanced Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
 		}
 
 		public function admin_view_temp_order_number( $payment_id ){

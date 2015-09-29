@@ -42,6 +42,7 @@ class EDD_Son_Settings{
 			),
 
 			/** Order number prefixes **/
+			/***************************/
 			array(
 				'id'    => 'edd_son_settings_prefixes',
 				'name'  => '<strong>' . __( 'Number Series Prefixes', EDD_SON_LANG ) . '</strong>',
@@ -71,6 +72,7 @@ class EDD_Son_Settings{
 			),
 
 			/** Order number postfixes **/
+			/****************************/
 			array(
 				'id'    => 'edd_son_settings_postfixes',
 				'name'  => '<strong>' . __( 'Number Series Postfixes', EDD_SON_LANG ) . '</strong>',
@@ -99,7 +101,44 @@ class EDD_Son_Settings{
 				'size' => 'medium'
 			),
 
+			/** Order number padding **/
+			/**************************/
+			array(
+				'id'    => 'edd_son_settings_padding',
+				'name'  => '<strong>' . __( 'Order number padding', EDD_SON_LANG ) . '</strong>',
+				'desc'  => '',
+				'type'  => 'header'
+			),
+			array(
+				'id' => 'edd_son_number_padding_type',
+				'name' => __('Pad order numbers', EDD_SON_LANG),
+				'desc' => __('Add padding before, after or not at all, to order numbers.', EDD_SON_LANG ),
+				'type' => 'radio',
+				'std' => 'no_padding',
+				'options' => array(
+					'no_padding' => __( 'No padding', EDD_SON_LANG ),
+					'pad_left' => __( 'Pad left', EDD_SON_LANG ),
+					'pad_right'  => __( 'Pad right', EDD_SON_LANG )
+				)
+			),
+			array(
+				'id' => 'edd_son_number_padding_char',
+				'name' => __('Pad with', EDD_SON_LANG),
+				'desc' => __('The character which will be used for padding order numbers.', EDD_SON_LANG ),
+				'type' => 'text',
+				'size' => 'small'
+			),
+
+			array(
+				'id' => 'edd_son_number_padding_length',
+				'name' => __('Order number length', EDD_SON_LANG),
+				'desc' => __('How long should the order number be? Eg. a length of 5, and order number 123, can produce XX123.', EDD_SON_LANG ),
+				'type' => 'text',
+				'size' => 'small'
+			),
+
 			/** Order numbers **/
+			/*******************/
 			array(
 				'id'    => 'edd_son_settings_numbers',
 				'name'  => '<strong>' . __( 'Next order numbers', EDD_SON_LANG ) . '</strong>',
