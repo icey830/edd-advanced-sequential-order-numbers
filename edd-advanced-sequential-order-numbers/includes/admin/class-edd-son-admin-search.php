@@ -42,13 +42,21 @@ class EDD_Son_Admin_Search {
 			return;
 		}
 
+		$prefix_temp = EDD_Son_Prefix::temporary();
+		$prefix_free = EDD_Son_Prefix::free();
+		$prefix_completed = EDD_Son_Prefix::completed();
+
+		$postfix_temp = EDD_Son_Postfix::temporary();
+		$postfix_free = EDD_Son_Postfix::free();
+		$postfix_completed = EDD_Son_Postfix::completed();
+
 		if ( edd_get_option( 'edd_son_active' ) && (
-				false !== strpos( $search, EDD_Son_Prefix::temporary() ) ||
-				false !== strpos( $search, EDD_Son_Prefix::free() ) ||
-				false !== strpos( $search, EDD_Son_Prefix::completed() ) ||
-				false !== strpos( $search, EDD_Son_Postfix::temporary() ) ||
-				false !== strpos( $search, EDD_Son_Postfix::free() ) ||
-				false !== strpos( $search, EDD_Son_Postfix::completed() )
+			( !empty( $prefix_temp ) && false !== strpos( $search, $prefix_temp ) ) ||
+			( !empty( $prefix_free ) && false !== strpos( $search, $prefix_free ) ) ||
+			( !empty( $prefix_completed ) && false !== strpos( $search, $prefix_completed ) ) ||
+			( !empty( $postfix_temp ) && false !== strpos( $search, $postfix_temp ) ) ||
+			( !empty( $postfix_free ) && false !== strpos( $search, $postfix_free ) ) ||
+			( !empty( $postfix_completed ) && false !== strpos( $search, $postfix_completed ) )
 			) ) {
 
 			$search_meta = array(
