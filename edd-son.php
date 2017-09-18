@@ -47,7 +47,6 @@ if( !class_exists( 'EDD_Son' ) ) {
 			define( 'EDD_SON_PLUGIN_URL', trailingslashit( plugin_dir_url(__FILE__) ) );
 			define( 'EDD_SON_VERSION', '1.0.3' );
 			define( 'EDD_SON_DEBUG', false );
-			define( 'EDD_SON_LANG', 'edd-son' );
 		}
 
 		/**
@@ -106,7 +105,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 			?>
 			<div class="edd-order-tx-id edd-admin-box-inside">
 				<p>
-					<span class="label"><?php _e( 'Temporary order number:', EDD_SON_LANG ); ?></span>&nbsp;
+					<span class="label"><?php _e( 'Temporary order number:', 'edd-son' ); ?></span>&nbsp;
 					<span><?php echo $temp_number; ?></span>
 				</p>
 			</div>
@@ -123,27 +122,27 @@ if( !class_exists( 'EDD_Son' ) ) {
 		public function load_textdomain() {
 			// Set filter for language directory
 			$lang_dir = EDD_SON_PLUGIN_DIR . '/languages/';
-			$lang_dir = apply_filters( 'edd_' . EDD_SON_LANG . '_languages_directory', $lang_dir );
+			$lang_dir = apply_filters( 'edd_' . 'edd-son' . '_languages_directory', $lang_dir );
 
 			// Traditional WordPress plugin locale filter
-			$locale = apply_filters( 'plugin_locale', get_locale(), EDD_SON_LANG );
-			$mofile = sprintf( '%1$s-%2$s.mo', EDD_SON_LANG, $locale );
+			$locale = apply_filters( 'plugin_locale', get_locale(), 'edd-son' );
+			$mofile = sprintf( '%1$s-%2$s.mo', 'edd-son', $locale );
 
 			// Setup paths to current locale file
 			$mofile_local   = $lang_dir . $mofile;
-			$mofile_global  = WP_LANG_DIR . '/' . EDD_SON_LANG . '/' . $mofile;
+			$mofile_global  = WP_LANG_DIR . '/' . 'edd-son' . '/' . $mofile;
 
 			if( file_exists( $mofile_global ) ) {
 				// Look in global /wp-content/languages/edd-plugin-name/ folder
-				load_textdomain( EDD_SON_LANG, $mofile_global );
+				load_textdomain( 'edd-son', $mofile_global );
 
 			} elseif( file_exists( $mofile_local ) ) {
 				// Look in local /wp-content/plugins/edd-plugin-name/languages/ folder
-				load_textdomain( EDD_SON_LANG, $mofile_local );
+				load_textdomain( 'edd-son', $mofile_local );
 
 			} else {
 				// Load the default language files
-				load_plugin_textdomain( EDD_SON_LANG, false, $lang_dir );
+				load_plugin_textdomain( 'edd-son', false, $lang_dir );
 			}
 		}
 
