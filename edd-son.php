@@ -22,8 +22,8 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 * @since       1.0.0
 		 * @return      object self::$instance The one true EDD_Son
 		 */
-		public static function instance(){
-			if(self::$_instance == null){
+		public static function instance() {
+			if(self::$_instance == null) {
 				self::$_instance = new EDD_Son();
 				self::$_instance->setup_constants();
 				self::$_instance->includes();
@@ -94,7 +94,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 				$license = new EDD_License( __FILE__, 'Advanced Sequential Order Numbers', EDD_SON_VERSION, 'EDD Team' );
 		}
 
-		public function admin_view_temp_order_number( $payment_id ){
+		public function admin_view_temp_order_number( $payment_id ) {
 			if( !$this->is_active() )
 				return;
 
@@ -193,8 +193,9 @@ if( !class_exists( 'EDD_Son' ) ) {
 		public function order_completed( $payment_id, $new_status, $old_status )
 		{
 			// Only run this update on orders that're completed
-			if( $new_status != 'publish' )
+			if( $new_status != 'publish' ) {
 				return;
+			}
 
 			// (Re)assign the order number. We reassign
 			// because the previously assigned number
@@ -209,11 +210,12 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 * @param $payment_data
 		 * @since 1.0.0
 		 */
-		public function assign_order_number( $payment_id, $payment_data = null){
+		public function assign_order_number( $payment_id, $payment_data = null) {
 			// First check if the plugin is active.
 			// If not, don't do anything!
-			if( !$this->is_active() )
+			if( ! $this->is_active() ) {
 				return;
+			}
 
 			$payment = get_post( $payment_id );
 
@@ -242,13 +244,14 @@ if( !class_exists( 'EDD_Son' ) ) {
 			// number series is enabled. If
 			// not enabled, no need to waste
 			// time getting the total.
-			if( $free_number_series )
+			if( $free_number_series ) {
 				$payment_total = edd_get_payment_amount( $payment->ID );
-			else
+			} else {
 				$payment_total = -1;
+			}
 
 			// If the order isn't completed, we set a temporary order number
-			if( $payment->post_status != 'publish' ){
+			if( $payment->post_status != 'publish' ) {
 				$number = EDD_Son_Prefix::temporary() . EDD_Son_Next_Order_Number::temporary() . EDD_Son_Postfix::temporary();
 
 				// Store the temporary payment number, for (possible)
@@ -259,13 +262,15 @@ if( !class_exists( 'EDD_Son' ) ) {
 			// The order is completed now, so we should
 			// set the actual prefix. First check if
 			// this is a free order.
-			}elseif( $free_number_series && $payment_total  == 0 )
+			} elseif( $free_number_series && $payment_total  == 0 ) {
 				$number = EDD_Son_Prefix::free() . EDD_Son_Next_Order_Number::free() . EDD_Son_Postfix::free();
+			}
 
 			// Since the order is completed, and it's
 			// not free, this must be a regular order.
-			else
+			else {
 				$number = EDD_Son_Prefix::completed() . EDD_Son_Next_Order_Number::completed() . EDD_Son_Postfix::completed();
+			}
 
 			// Return the order number
 			return $number;
