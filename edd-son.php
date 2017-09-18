@@ -3,8 +3,8 @@
  * Plugin Name: Easy Digital Downloads - Advanced Sequential Order Numbers
  * Description: Advanced sequential order numbers for Easy Digital Downloads.
  * Version: 1.0.3
- * Author: 1337 ApS
- * Author URI: http://1337.dk
+ * Author: Easy Digital Downloads, LLC
+ * Author URI: https://easydigitaldownloads.com
  */
 
 // Exit if accessed directly
@@ -91,7 +91,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 
 			// Handle licensing
 			if( class_exists( 'EDD_License' ) )
-				$license = new EDD_License( __FILE__, 'Advanced Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
+				$license = new EDD_License( __FILE__, 'Advanced Sequential Order Numbers', EDD_SON_VERSION, 'EDD Team' );
 		}
 
 		public function admin_view_temp_order_number( $payment_id ){
