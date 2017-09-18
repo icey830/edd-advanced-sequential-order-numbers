@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Easy Digital Downloads - Advanced Sequential Order Numbers
  * Description: Advanced sequential order numbers for Easy Digital Downloads.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Easy Digital Downloads, LLC
  * Author URI: https://easydigitaldownloads.com
  */
@@ -45,7 +45,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 			define( 'EDD_SON_PLUGIN_FILE', __FILE__ );
 			define( 'EDD_SON_PLUGIN_DIR', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 			define( 'EDD_SON_PLUGIN_URL', trailingslashit( plugin_dir_url(__FILE__) ) );
-			define( 'EDD_SON_VERSION', '1.0.5' );
+			define( 'EDD_SON_VERSION', '1.0.6' );
 			define( 'EDD_SON_DEBUG', false );
 		}
 
