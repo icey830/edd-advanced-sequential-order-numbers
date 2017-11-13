@@ -8,11 +8,14 @@
  */
 
 // Exit if accessed directly
-if( !defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-if( !class_exists( 'EDD_Son' ) ) {
+if ( ! class_exists( 'EDD_Son' ) ) {
 
 	class EDD_Son {
+
 		private static $_instance;
 
 		/**
@@ -22,14 +25,15 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 * @since       1.0.0
 		 * @return      object self::$instance The one true EDD_Son
 		 */
-		public static function instance(){
-			if(self::$_instance == null){
+		public static function instance() {
+			if ( self::$_instance == null ) {
 				self::$_instance = new EDD_Son();
 				self::$_instance->setup_constants();
 				self::$_instance->includes();
 				self::$_instance->load_textdomain();
 				self::$_instance->hooks();
 			}
+
 			return self::$_instance;
 		}
 
@@ -40,11 +44,10 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 * @since       1.0.0
 		 * @return      void
 		 */
-		private function setup_constants()
-		{
+		private function setup_constants() {
 			define( 'EDD_SON_PLUGIN_FILE', __FILE__ );
 			define( 'EDD_SON_PLUGIN_DIR', trailingslashit( plugin_dir_path( __FILE__ ) ) );
-			define( 'EDD_SON_PLUGIN_URL', trailingslashit( plugin_dir_url(__FILE__) ) );
+			define( 'EDD_SON_PLUGIN_URL', trailingslashit( plugin_dir_url( __FILE__ ) ) );
 			define( 'EDD_SON_VERSION', '1.0.6' );
 			define( 'EDD_SON_DEBUG', false );
 		}
@@ -56,8 +59,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 * @since       1.0.0
 		 * @return      void
 		 */
-		private function includes()
-		{
+		private function includes() {
 			require_once EDD_SON_PLUGIN_DIR . 'includes/class-edd-son-log.php';
 			require_once EDD_SON_PLUGIN_DIR . 'includes/class-edd-son-settings.php';
 			require_once EDD_SON_PLUGIN_DIR . 'includes/class-edd-son-next-order-number.php';
@@ -80,7 +82,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 			add_filter( 'edd_settings_misc', array( 'EDD_Son_Settings', 'remove_edd_settings' ) );
 
 			// Admin view
-			add_action( 'edd_view_order_details_payment_meta_after', array( $this, 'admin_view_temp_order_number'));
+			add_action( 'edd_view_order_details_payment_meta_after', array( $this, 'admin_view_temp_order_number' ) );
 
 			// Inject order number functionality
 			add_action( 'edd_insert_payment', array( $this, 'assign_order_number' ), 10, 2 );
@@ -89,18 +91,21 @@ if( !class_exists( 'EDD_Son' ) ) {
 
 
 			// Handle licensing
-			if( class_exists( 'EDD_License' ) )
+			if ( class_exists( 'EDD_License' ) ) {
 				$license = new EDD_License( __FILE__, 'Advanced Sequential Order Numbers', EDD_SON_VERSION, '1337 ApS' );
+			}
 		}
 
-		public function admin_view_temp_order_number( $payment_id ){
-			if( !$this->is_active() )
+		public function admin_view_temp_order_number( $payment_id ) {
+			if ( ! $this->is_active() ) {
 				return;
+			}
 
 			$temp_number = edd_get_payment_meta( $payment_id, '_edd_son_temp_payment_number', true );
 
-			if( empty( $temp_number ) )
+			if ( empty( $temp_number ) ) {
 				return;
+			}
 
 			?>
 			<div class="edd-order-tx-id edd-admin-box-inside">
@@ -129,14 +134,14 @@ if( !class_exists( 'EDD_Son' ) ) {
 			$mofile = sprintf( '%1$s-%2$s.mo', 'edd-son', $locale );
 
 			// Setup paths to current locale file
-			$mofile_local   = $lang_dir . $mofile;
-			$mofile_global  = WP_LANG_DIR . '/' . 'edd-son' . '/' . $mofile;
+			$mofile_local  = $lang_dir . $mofile;
+			$mofile_global = WP_LANG_DIR . '/' . 'edd-son' . '/' . $mofile;
 
-			if( file_exists( $mofile_global ) ) {
+			if ( file_exists( $mofile_global ) ) {
 				// Look in global /wp-content/languages/edd-plugin-name/ folder
 				load_textdomain( 'edd-son', $mofile_global );
 
-			} elseif( file_exists( $mofile_local ) ) {
+			} elseif ( file_exists( $mofile_local ) ) {
 				// Look in local /wp-content/plugins/edd-plugin-name/languages/ folder
 				load_textdomain( 'edd-son', $mofile_local );
 
@@ -152,8 +157,7 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 * @since 1.0.0
 		 * @return bool
 		 */
-		private function is_active()
-		{
+		private function is_active() {
 			return edd_get_option( 'edd_son_active' );
 		}
 
@@ -162,19 +166,21 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 *
 		 * @param $number
 		 * @param $payment_id
-		 * @see 'edd_payment_number'
+		 *
+		 * @see   'edd_payment_number'
 		 * @since 1.0.0
 		 * @return string The order number
 		 */
-		public function get_payment_number( $number, $payment_id )
-		{
-			if( !$this->is_active() )
+		public function get_payment_number( $number, $payment_id ) {
+			if ( ! $this->is_active() ) {
 				return $number;
+			}
 
 			$sequential_number = edd_get_payment_meta( $payment_id, '_edd_son_payment_number', true );
 
-			if( ! $sequential_number )
+			if ( ! $sequential_number ) {
 				return $number;
+			}
 
 			return $sequential_number;
 
@@ -183,17 +189,18 @@ if( !class_exists( 'EDD_Son' ) ) {
 		/**
 		 * Update order number of a completed order
 		 *
-		 * @param int $payment_id
+		 * @param int    $payment_id
 		 * @param string $new_status
 		 * @param string $old_status
-		 * @see 'edd_update_payment_status'
+		 *
+		 * @see   'edd_update_payment_status'
 		 * @since 1.0.0
 		 */
-		public function order_completed( $payment_id, $new_status, $old_status )
-		{
+		public function order_completed( $payment_id, $new_status, $old_status ) {
 			// Only run this update on orders that're completed
-			if( !$this->is_assignable_status( $new_status ) )
+			if ( ! $this->is_assignable_status( $new_status ) ) {
 				return;
+			}
 
 			// (Re)assign the order number. We reassign
 			// because the previously assigned number
@@ -206,13 +213,15 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 *
 		 * @param $payment_id
 		 * @param $payment_data
+		 *
 		 * @since 1.0.0
 		 */
-		public function assign_order_number( $payment_id, $payment_data = null){
+		public function assign_order_number( $payment_id, $payment_data = null ) {
 			// First check if the plugin is active.
 			// If not, don't do anything!
-			if( !$this->is_active() )
+			if ( ! $this->is_active() ) {
 				return;
+			}
 
 			$payment = get_post( $payment_id );
 
@@ -228,12 +237,12 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 * Get the next order number, including pre-/postfix.
 		 *
 		 * @param $payment Payment post object
+		 *
 		 * @since 1.0.0
 		 *
 		 * @return string The next payment number, for the specific order type
 		 */
-		private function next_order_number( $payment )
-		{
+		private function next_order_number( $payment ) {
 			// Use different number series for free orders
 			$free_number_series = edd_get_option( 'edd_son_free_number_series' );
 
@@ -241,13 +250,14 @@ if( !class_exists( 'EDD_Son' ) ) {
 			// number series is enabled. If
 			// not enabled, no need to waste
 			// time getting the total.
-			if( $free_number_series )
+			if ( $free_number_series ) {
 				$payment_total = edd_get_payment_amount( $payment->ID );
-			else
+			} else {
 				$payment_total = -1;
+			}
 
 			// If the order isn't completed, we set a temporary order number
-			if( !$this->is_assignable_status( $payment->post_status ) ){
+			if ( ! $this->is_assignable_status( $payment->post_status ) ) {
 				$number = EDD_Son_Prefix::temporary() . EDD_Son_Next_Order_Number::temporary() . EDD_Son_Postfix::temporary();
 
 				// Store the temporary payment number, for (possible)
@@ -255,16 +265,18 @@ if( !class_exists( 'EDD_Son' ) ) {
 				// will be overwritten, once the order is completed.
 				edd_update_payment_meta( $payment->ID, '_edd_son_temp_payment_number', $number );
 
-			// The order is completed now, so we should
-			// set the actual prefix. First check if
-			// this is a free order.
-			}elseif( $free_number_series && $payment_total  == 0 )
+				// The order is completed now, so we should
+				// set the actual prefix. First check if
+				// this is a free order.
+			} elseif ( $free_number_series && $payment_total == 0 ) {
 				$number = EDD_Son_Prefix::free() . EDD_Son_Next_Order_Number::free() . EDD_Son_Postfix::free();
+			}
 
 			// Since the order is completed, and it's
 			// not free, this must be a regular order.
-			else
+			else {
 				$number = EDD_Son_Prefix::completed() . EDD_Son_Next_Order_Number::completed() . EDD_Son_Postfix::completed();
+			}
 
 			// Return the order number
 			return $number;
@@ -274,11 +286,12 @@ if( !class_exists( 'EDD_Son' ) ) {
 		 * Should the given payment status be considered a 'finalized' payment.
 		 *
 		 * @param $status string The payment status
+		 *
 		 * @since 1.0.5
 		 *
 		 * @return bool Whether or not the given status, is assignable to a non-temporary order number.
 		 */
-		private function is_assignable_status( $status ){
+		private function is_assignable_status( $status ) {
 			return $status == 'publish' || $status == 'edd_subscription';
 		}
 	}
@@ -287,4 +300,5 @@ if( !class_exists( 'EDD_Son' ) ) {
 function EDD_Son_load() {
 	return EDD_Son::instance();
 }
+
 add_action( 'plugins_loaded', 'EDD_Son_load' );
